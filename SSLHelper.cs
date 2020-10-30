@@ -32,10 +32,8 @@ namespace SSLHelper
 
                 Console.WriteLine($"{indent}Subject={c.Subject}, Expires: {c.GetExpirationDateString()}, KeyAlgorithm={c.GetKeyAlgorithmParametersString()} Issuer={c.Issuer}");
 
-                string filename = c.Subject.Replace("CN=", "").Replace("*", "") + ".cer";
-                Console.WriteLine($"{indent}Saving Certificate public key data: {filename}");
-                var certBytes = c.Export(X509ContentType.Cert);
-                File.WriteAllBytes(filename, certBytes);
+                // if(false) //TODO add export option
+                //     SaveCertificatesToDisk(c, indent);
 
                 var s = el.ChainElementStatus;
                 foreach (var status in s.Where(x => x.Status != 0))
@@ -61,6 +59,13 @@ namespace SSLHelper
 
             if (ok) Console.WriteLine("No errors - certificate validation passed!");
             return ok;
+        }
+
+        private static void SaveCertificatesToDisk(X509Certificate2 c, string indent){
+            string filename = c.Subject.Replace("CN=", "").Replace("*", "") + ".cer";
+            Console.WriteLine($"{indent}Saving Certificate public key data: {filename}");
+            var certBytes = c.Export(X509ContentType.Cert);
+            File.WriteAllBytes(filename, certBytes);
         }
 
         public static X509Certificate OnClientCertificateRequested(
